@@ -8,7 +8,7 @@ const router = express.Router()
 const {db, ObjectId} = await connectToDatabase()
 const nomeCollection = 'filmes'
 
-const validaFilmes = [
+const validaFilme = [
     check('#TITLE')
     .not().isEmpty().trim().withMessage('É obrigatório informar o nome do filme')
     .isAlphanumeric('pt-BR', {ignore: '/. '})
@@ -117,7 +117,7 @@ router.delete('/:id', async(req, res) => {
  * POST /api/filmes
  * Insere um novo filme
  */
-router.post('/', validaFilmes, async(req, res) => {
+router.post('/', validaFilme, async(req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()){
         return res.status(400).json(({
@@ -135,7 +135,7 @@ router.post('/', validaFilmes, async(req, res) => {
  * PUT /api/filmes
  * Altera um filme
  */
-router.put('/', validaFilmes, async(req, res) => {
+router.put('/', validaFilme, async(req, res) => {
     let idDocumento = req.body._id //Armazena o id do documento
     delete req.body._id //iremons remover o id do body
 
