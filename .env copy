@@ -1,0 +1,2 @@
+MONGODB_URI = SuaStringMongo
+MONGODB_DB = SuaDatabase

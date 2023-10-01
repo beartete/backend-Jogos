@@ -1,0 +1,46 @@
+// Teste da resquisições REST dos filmes
+
+@baseURL = http://localhost:4000/api/filmes
+
+// GET - Lista todos os registro
+GET {{baseURL}}
+Content-Type: application/json
+
+###
+// GET - Lista um registro pelo id
+GET {{baseURL}}/id/6519da653effdc2d3b0ef902
+
+###
+//GET - Listra um registro pela title
+GET {{baseURL}}
+Content-Type: application/json
+
+###
+//DELETE - Apaga um registro pelo id
+DELETE {{baseURL}}/6519da653effdc2d3b0ef902
+Content-Type: aplication/json
+
+###
+// POST - Insere um novo registro
+
+POST {{baseURL}}
+Content-Type: application/json
+
+{
+"#TITLE": "Varumayin Niram Sigappu",
+"#YEAR": 1980,
+"#IMDB_ID": "tt0155329",
+"#RANK": 136991,
+"#ACTORS": "Kamal Haasan, Sridevi",
+"#AKA": "Varumayin Niram Sigappu (1980) ",
+"#IMDB_URL": "https://imdb.com/title/tt0155329",
+"#IMDB_IV": "https://t.me/iv?url=https%3A%2F%2Fimdb.com%2Ftitle%2Ftt0155329&rhash=77ed0696a538f4",
+"#IMG_POSTER": "https://m.media-amazon.com/images/M/MV5BOTRlYjJhMTItY2FlOC00ZDc3LWIwNTctMTI2YTFmODFkZWUzXkEyXkFqcGdeQXVyOTIzODUxMjk@._V1_.jpg",
+"photo_width": 703,
+"photo_height": 1100
+    }   
+
+###
+// PUT - Altera registro
+PUT {{baseURL}}
+Content-Type: application/json

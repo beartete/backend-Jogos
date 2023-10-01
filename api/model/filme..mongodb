@@ -1,0 +1,50 @@
+use('FatecItu')
+
+db.filmes.insertOne({
+"#TITLE": "Niram",
+"#YEAR": 1999,
+"#IMDB_ID": "tt0255426",
+"#RANK": 130452,
+"#ACTORS": "Kunchacko Boban, Shalini",
+"#AKA": "Niram (1999) ",
+})
+use('FatecItu')
+
+db.filmes.insertOne({
+"#TITLE": "Varumayin Niram Sigappu",
+"#YEAR": 1980,
+"#IMDB_ID": "tt0155329",
+"#RANK": 136991,
+"#ACTORS": "Kamal Haasan, Sridevi",
+"#AKA": "Varumayin Niram Sigappu (1980) ",
+})
+use('FatecItu')
+
+db.filmes.insertOne({
+"#TITLE": "Akashathinte Niram",
+"#YEAR": 2012,
+"#IMDB_ID": "tt2186717",
+"#RANK": 337763,
+"#ACTORS": "Govardhan B.K, Master Govardhan",
+"#AKA": "Akashathinte Niram (2012) ",
+})
+use('FatecItu')
+
+db.filmes.insertOne({
+"#TITLE": "Niram Maaratha Pookkal",
+"#YEAR": 1979,
+"#IMDB_ID": "tt0155917",
+"#RANK": 406719,
+"#ACTORS": "Rati Agnihotri, Radhika Sarathkumar",
+"#AKA": "Niram Maaratha Pookkal (1979) ",
+})
+use('FatecItu')
+
+db.filmes.insertOne({
+"#TITLE": "Niram Maratha Pookal",
+"#YEAR": 2017,
+"#IMDB_ID": "tt10305878",
+"#RANK": 531532,
+"#ACTORS": "Snisha Chandran, Nishma",
+"#AKA": "Niram Maratha Pookal (2017) ",
+})
