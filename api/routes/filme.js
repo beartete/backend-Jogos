@@ -1,6 +1,6 @@
 /* API REST dos filmes */
 
-import express from 'express'
+import express, { Router } from 'express'
 import { connectToDatabase } from '../utils/mongodb.js'
 import { check, validationResult } from 'express-validator'
 
@@ -68,7 +68,7 @@ router.get('/',async(req,res) => {
  */
 router.get('/id/:id', async(req, res) => {
     try{
-        db.collection(nomeCollection).find({'_id': {$eq: ObjectId(req.parems.id)}})
+        db.collection(nomeCollection).find({'_id': {$eq: ObjectId(req.params.id)}})
         .ToArray((err, docs) => {
             if(err){
                 res.status(400).json(err)
