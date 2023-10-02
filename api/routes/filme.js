@@ -68,8 +68,7 @@ router.get('/',async(req,res) => {
  */
 router.get('/id/:id', async(req, res) => {
     try{
-        db.collection(nomeCollection).find({'_id': {$eq: ObjectId(req.params.id)}})
-        .ToArray((err, docs) => {
+        db.collection(nomeCollection).find({'_id': {$eq: ObjectId(req.params.id)}}).toArray((err, docs) => {
             if(err){
                 res.status(400).json(err)
             } else {

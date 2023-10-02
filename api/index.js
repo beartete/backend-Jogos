@@ -13,9 +13,9 @@ app.use('/', express.static('public'))
 app.use('/favicom.ico', express.static('public/images/icon.videogame.png'))
 
 //Rotas da API
-app.use('/api/fimes', rotasFilmes)
+app.use('/api/filmes', rotasFilmes)
 
-app.get('api', (req, res) => {
+app.get('/api', (req, res) => {
     res.status(200).json({
         message: 'API Fatec 100% funcional',
         version: '1.0.1'
