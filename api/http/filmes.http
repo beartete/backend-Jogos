@@ -32,13 +32,8 @@ Content-Type: application/json
 "#IMDB_ID": "tt0155329",
 "#RANK": 136991,
 "#ACTORS": "Kamal Haasan, Sridevi",
-"#AKA": "Varumayin Niram Sigappu (1980) ",
-"#IMDB_URL": "https://imdb.com/title/tt0155329",
-"#IMDB_IV": "https://t.me/iv?url=https%3A%2F%2Fimdb.com%2Ftitle%2Ftt0155329&rhash=77ed0696a538f4",
-"#IMG_POSTER": "https://m.media-amazon.com/images/M/MV5BOTRlYjJhMTItY2FlOC00ZDc3LWIwNTctMTI2YTFmODFkZWUzXkEyXkFqcGdeQXVyOTIzODUxMjk@._V1_.jpg",
-"photo_width": 703,
-"photo_height": 1100
-    }   
+"#AKA": "Varumayin Niram Sigappu (1980) "
+}   
 
 ###
 // PUT - Altera registro

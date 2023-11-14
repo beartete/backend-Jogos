@@ -124,7 +124,7 @@ router.post('/', validaFilme, async(req, res) => {
         }))
     } else {
         await db.collection(nomeCollection)
-        .insrtOne(req.body)
+        .insertOne(req.body)
         .then(result => res.status(200).send(result))
         .catch(err => res.status(400).json(err))
     }
