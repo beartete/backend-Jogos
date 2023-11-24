@@ -1,0 +1,65 @@
+body {
+    background-image: url('../images/fundo.jpg');
+    background-size: cover; /* Para cobrir toda a área visível */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+}
+
+
+.container {
+    margin-top: 50px;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #a72828;
+    border-radius: 15px 15px 0 0;
+    padding: 15px;
+    color: white;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #a72828;
+    border-color: #a72828;
+}
+
+.btn-success:hover {
+    background-color: #882121;
+    border-color: #7e1e1e;
+}
+
+.card-footer a {
+    color: #a72828;
+    text-decoration: none;
+}
+
+.card-footer a:hover {
+    text-decoration: underline;
+}
+
+.modal-content {
+    border-radius: 15px;
+}
+
+.modal-header {
+    background-color: #ad2c2c;
+    border-radius: 15px 15px 0 0;
+    color: white;
+    padding: 15px;
+}
+
+.modal-footer {
+    border-radius: 0 0 15px 15px;
+    padding: 10px;
+}
