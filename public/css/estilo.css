@@ -1,5 +1,4 @@
 body {
-    background-image: url('../images/fundo.jpg');
     background-size: cover; /* Para cobrir toda a área visível */
     background-repeat: no-repeat; /* Evita repetição da imagem */
 }
@@ -7,11 +6,6 @@ body {
 
 .container {
     margin-top: 50px;
-}
-
-.card {
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -59,7 +53,3 @@ body {
     padding: 15px;
 }
 
-.modal-footer {
-    border-radius: 0 0 15px 15px;
-    padding: 10px;
-}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filmes</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CSS -->
+  <style>
+    /* Estilo para a barra de navegação */
+    .navbar {
+      background-color: rgb(209, 23, 23) !important; /* Cor vermelha */
+    }
+
+    /* Estilo para o rodapé */
+    footer.footer {
+      background-color: rgb(209, 23, 23); /* Cor: rgb(209, 23, 23) */
+      color: white; /* Texto em branco */
+      padding: 20px 0;
+    }
+
+    /* Estilo para o corpo da página */
+    body {
+      background-color: #141414; /* Cor de fundo */
+      font-family: Arial, sans-serif; /* Fonte */
+      margin-top: 60px; /* Para evitar que a barra de navegação sobreponha o conteúdo */
+      color: white;
+    }
+
+    /* Estilo para os filmes em destaque */
+    .filme img {
+      border-radius: 8px; /* Cantos arredondados */
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      width: 200px;
+    }
+
+    .filme img:hover {
+      transform: scale(1.1); /* Aumenta o tamanho ao passar o mouse */
+    }
+     /* Estilo para o contêiner do vídeo */
+     .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      overflow: hidden;
+      padding-bottom: 56.25%; /* Proporção 16:9 para o vídeo */
+    }
+
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px; /* Cantos arredondados */
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    /* Estilo para os botões */
+    .btn-assistir,
+    .btn-lista {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      display: none;
+    }
+
+    .video-container:hover .btn-assistir,
+    .video-container:hover .btn-lista {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <a class="navbar-brand" href="#">FilmScore</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="prestadores.html">Prestadores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="usuario.html">Usuários</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="filmes.html">Filmes</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item m-3">
+          <a class="btn btn-danger" href="#" id="logoutBtn">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Conteúdo da página -->
+  <div class="container mt-4">
+    <!-- Espaço para o vídeo principal -->
+    <div class="video-container text-center mb-6">
+      <video controls poster="images/video-thumbnail.jpg" preload="none">
+        <source src="video/filme11.mov" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <button class="btn btn-danger mt-3">Assistir</button>
+    <button class="btn btn-outline-danger mt-3">+ Minha Lista</button>
+    <br>
+    <br>
+
+    <!-- Em Alta -->
+    <h2 class="mb-3">Em Alta</h2>
+    <div class="row">
+      <div class="col-2 filme">
+        <img src="images/filme1.png" alt="Filme 1">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme2.png" alt="Filme 2">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme3.png" alt="Filme 3">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme4.png" alt="Filme 4">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme5.png" alt="Filme 5">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme6.png" alt="Filme 6">
+      </div>
+    </div>
+
+    <!-- Só na FilmScore -->
+    <h2 class="mt-5 mb-3">Só na FilmScore</h2>
+    <div class="row">
+      <div class="col-2 filme">
+        <img src="images/filme7.png" alt="Filme 7">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme8.png" alt="Filme 8">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme9.png" alt="Filme 9">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme10.png" alt="Filme 10">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme12.png" alt="Filme 10">
+      </div>
+      <div class="col-2 filme">
+        <img src="images/filme13.png" alt="Filme 10">
+      </div>
+    </div>
+
+   <!-- Lançamentos -->
+   <h2 class="mt-5 mb-3">Lançamentos</h2>
+   <div class="row">
+     <div class="col-2 filme">
+       <img src="images/filme14.png" alt="Filme 7">
+     </div>
+     <div class="col-2 filme">
+       <img src="images/filme15.png" alt="Filme 8">
+     </div>
+     <div class="col-2 filme">
+       <img src="images/filme16.png" alt="Filme 9">
+     </div>
+     <div class="col-2 filme">
+       <img src="images/filme17.png" alt="Filme 10">
+     </div>
+     <div class="col-2 filme">
+       <img src="images/filme18.png" alt="Filme 10">
+     </div>
+     <div class="col-2 filme">
+       <img src="images/filme19.png" alt="Filme 10">
+     </div>
+   </div>
+</div>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container text-center">
+      <p>@FilmScore@oul.com 2023</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

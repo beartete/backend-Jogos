@@ -1,5 +1,0 @@
-use('FatecItu')
-db.usuarios.drop()
-
-use('FatecItu')
-db.usuarios.find()
