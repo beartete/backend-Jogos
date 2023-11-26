@@ -70,7 +70,7 @@
     <div class="row">
       <div class="col-md-6">
         <!-- Título do formulário fora do retângulo -->
-        <h4 class="text-primary mt-3">Cadastro de Usuários</h4>
+        <h4 class="text-danger mt-3">Cadastro de Usuários</h4>
         <!-- Formulário dentro do retângulo -->
         <div class="container-fluid formulario-retangulo">
           <div class="row">
@@ -78,22 +78,22 @@
               <form action="/cadastrar" method="post">
                 <div class="mb-3">
                   <label for="nome" class="form-label">Nome:</label>
-                  <input type="text" class="form-control" id="nome" name="nome">
+                  <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome">
                 </div>
 
                 <div class="mb-3">
                   <label for="email" class="form-label">E-mail:</label>
-                  <input type="email" class="form-control" id="email" name="email">
+                  <input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
                 </div>
 
                 <div class="mb-3">
                   <label for="senha" class="form-label">Senha:</label>
-                  <input type="password" class="form-control" id="senha" name="senha">
+                  <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha">
                 </div>
 
                 <div class="mb-3">
                   <label for="idade" class="form-label">Idade:</label>
-                  <input type="number" class="form-control" id="idade" name="idade">
+                  <input type="number" class="form-control" id="idade" name="idade" placeholder="Idade">
                 </div>
 
                 <div class="mb-3">
@@ -114,8 +114,9 @@
                 </div>
 
                 <div class="mb-3">
-                  <input type="submit" class="btn btn-primary" value="Cadastrar">
+                    <input type="submit" class="btn btn-danger" value="Cadastrar">
                 </div>
+                                
               </form>
             </div>
           </div>
