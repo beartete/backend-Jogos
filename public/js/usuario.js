@@ -1,159 +1,184 @@
-//const urlBase = 'https://backend-mongodb-pi.vercel.app/api';
-const urlBase = 'http://localhost:4001/api';
-const resultadoModal = new bootstrap.Modal(document.getElementById("modalMensagem"));
-const access_token = localStorage.getItem("token") || null;
+import express from 'express'
+import { connectToDatabase } from '../utils/mongodb.js'
+import { check, validationResult } from 'express-validator'
 
-//evento submit do formulário
-document.getElementById('formUsuario').addEventListener('submit', function (event) {
-    event.preventDefault(); // evita o recarregamento
+const router = express.Router()
+const { db, ObjectId } = await connectToDatabase()
+const nomeCollection = 'usuarios'
+//JWT
+import auth from '../middleware/auth.js'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
-    const idUsuario = document.getElementById('id').value;
-    let usuario = {
-        "nome": document.getElementById('nome').value,
-        "email": document.getElementById('email').value,
-        "senha": document.getElementById('senha').value,
-        "idade": document.getElementById('idade').value,
-        "genero": document.querySelector('input[name="genero"]:checked').value,
-        "ativo": true,
-        "tipo": "tipo_de_usuario"
-    };
+/******************************
+ * Validações
+ * ***************************/
+const validaUsuario = [
+    check('nome')
+        .not().isEmpty().trim().withMessage('É obrigatório informar o nome')
+        .isAlpha('pt-BR', { ignore: ' ' }).withMessage('Informe apenas texto no nome')
+        .isLength({ min: 3 }).withMessage('O nome do usuário deve ter ao menos 3 caracteres')
+        .isLength({ max: 100 }).withMessage('O nome do usuário deve ter no máximo 100 caracteres'),
+    check('email')
+        .not().isEmpty().trim().withMessage('O email é obrigatório')
+        .isLowercase().withMessage('O email não pode ter MAIÚSCULOS')
+        .isEmail().withMessage('O email deve ser válido')
+        .custom((value, { req }) => {
+            return db.collection(nomeCollection).find({ email: { $eq: value } }).toArray()
+                .then((email) => {
+                    //verifica se não tem o id, para garantir que é inclusão
+                    if (email.length && !req.params.id) {
+                        return Promise.reject(`O email ${value} já existe!`)
+                    }
+                })
+        }),
+    check('senha')
+        .not().isEmpty().trim().withMessage('A senha é obrigatória')
+        .isLength({ min: 6 }).withMessage('A senha deve ter no mínimo 6 caracteres')
+        .isStrongPassword({
+            minLength: 6,
+            minLowercase: 1, minUppercase: 1,
+            minSymbols: 1, minNumbers: 1
+        }).withMessage('A senha informada não é segura. Informe no mínimo 1 caractere maiúsculo, 1 caractere minúsculo, 1 número e 1 caractere especial'),
+    check('ativo')
+        .default(true)
+        .isBoolean().withMessage('O valor deve ser um booleano. True ou False'),
+    check('tipo')
+        .default('Cliente')
+        .isIn(['Admin', 'Cliente']).withMessage('O tipo do usuário deve ser Admin ou Cliente'),
+    check('avatar')
+        .optional({ nullable: true }) // permitir usuário sem avatar 
+        .isURL().withMessage('O endereço do Avatar deve ser uma URL válida')
+]
+//Post de usuário
+router.post('/', validaUsuario, async (req, res) => {
+    const schemaErrors = validationResult(req)
+    if (!schemaErrors.isEmpty()) {
+        return res.status(403).json(({
+            errors: schemaErrors.array()
+        }))
+    } else {
+        //definindo o avatar default
+        req.body.avatar = `https://ui-avatars.com/api/?name=${req.body.nome.replace(/ /g, '+')}&background=F00&color=00F`
+        //criptografia da senha
+        //genSalt => impede que 2 senhas iguais tenham resultados iguais
+        const salt = await bcrypt.genSalt(10)
+        req.body.senha = await bcrypt.hash(req.body.senha, salt)
+        //iremos salvar o registro
+        await db.collection(nomeCollection)
+            .insertOne(req.body)
+            .then(result => res.status(201).send(result))
+            .catch(err => res.status(400).json(err))
+    } //fecha o else 
+})
 
-    if (idUsuario.length > 0) { //Se possuir o ID, enviamos junto com o objeto
-        usuario["_id"] = idUsuario;
+/************************************************************
+ * POST /usuarios/login
+ * Efetua o login do usuário e retorna o token JWT
+ ************************************************************/
+const validaLogin = [
+    check('email')
+        .not().isEmpty().trim().withMessage('O email é obrigatório!')
+        .isEmail().withMessage('Informe um e-mail válido'),
+    check('senha')
+        .not().isEmpty().trim().withMessage('A senha é obrigatória!')
+        .isLength({ min: 6 }).withMessage('A senha deve ter no mínimo 6 carac.')
+]
+
+router.post('/login', validaLogin, async (req, res) => {
+    const schemaErrors = validationResult(req)
+    if (!schemaErrors.isEmpty()) {
+        return res.status(403).json(({ errors: schemaErrors.array() }))
     }
-
-    salvaUsuario(usuario);
-});
-
-async function salvaUsuario(usuario) {
-    let method = usuario.hasOwnProperty('_id') ? "PUT" : "POST";
-    let endpoint = usuario.hasOwnProperty('_id') ? `${urlBase}/usuarios` : `${urlBase}/usuarios/${usuario._id}`;
-
+    //obtendo os valores do login
+    const { email, senha } = req.body
     try {
-        const response = await fetch(endpoint, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-                "access-token": access_token //envia o token na requisição
-            },
-            body: JSON.stringify(usuario)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            if (data.acknowledged) {
-                const message = usuario.hasOwnProperty('_id') ? 'Usuário alterado com sucesso!' : 'Usuário incluído com sucesso!';
-                alert(message);
-                document.getElementById('formUsuario').reset();
-                carregaUsuarios();
+        //Verificando se o email informado existe no Mongodb
+        let usuario = await db.collection(nomeCollection)
+            .find({ email }).limit(1).toArray()
+        //Se o array estiver vazio, é que o email não existe
+        if (!usuario.length)
+            return res.status(404).json({
+                errors: [{
+                    value: `${email}`,
+                    msg: 'O email informado não está cadastrado',
+                    param: 'email'
+                }]
+            })
+        //Se o email existir, comparamos se a senha está correta  
+        const isMatch = await bcrypt.compare(senha, usuario[0].senha)
+        if (!isMatch)
+            return res.status(403).json({
+                errors: [{
+                    value: `senha`,
+                    msg: 'A senha informada está incorreta',
+                    param: 'senha'
+                }]
+            })
+        //Iremos gerar o token JWT
+        jwt.sign(
+            { usuario: { id: usuario[0]._id } },
+            process.env.SECRET_KEY,
+            { expiresIn: process.env.EXPIRES_IN },
+            (err, token) => {
+                if (err) throw err
+                res.status(200).json({
+                    access_token: token
+                })
             }
-        } else {
-            if (data.errors) {
-                const errorMessages = data.errors.map(error => error.msg).join("\n");
-                document.getElementById("mensagem").innerHTML = `<span class='text-danger'>${errorMessages}</span>`;
-                resultadoModal.show();
-            } else {
-                document.getElementById("mensagem").innerHTML = `<span class='text-danger'>${JSON.stringify(data)}</span>`;
-                resultadoModal.show();
-            }
-        }
-    } catch (error) {
-        document.getElementById("mensagem").innerHTML = `<span class='text-danger'>Erro ao salvar o usuário: ${error.message}</span>`;
-        resultadoModal.show();
+        )
+    } catch (e) {
+        console.error(e)
     }
-}
+})
 
-async function carregaUsuarios() {
-    const tabela = document.getElementById('dadosTabela');
-    tabela.innerHTML = ''; //Limpa a tabela antes de recarregar
-
-    try {
-        const response = await fetch(`${urlBase}/usuarios`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "access-token": access_token //envia o token na requisição
-            }
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            data.forEach(usuario => {
-                tabela.innerHTML += `
-                <tr>
-                    <td>${usuario.nome}</td>
-                    <td>${usuario.email}</td>
-                    <td>${usuario.idade}</td>
-                    <td>${usuario.genero}</td>
-                    <td>
-                        <button class='btn btn-danger btn-sm' onclick='removeUsuario("${usuario._id}")'>🗑 Excluir </button>
-                        <button class='btn btn-warning btn-sm' onclick='buscaUsuarioPeloId("${usuario._id}")'>📝 Editar </button>
-                    </td>
-                </tr>
-                `;
-            });
-        } else {
-            document.getElementById("mensagem").innerHTML = `<span class='text-danger'>Erro ao carregar os usuários</span>`;
-            resultadoModal.show();
-        }
-    } catch (error) {
-        document.getElementById("mensagem").innerHTML = `<span class='text-danger'>Erro ao carregar os usuários: ${error.message}</span>`;
-        resultadoModal.show();
+/************************************************************
+ * GET /usuarios
+ * Lista todos os usuários. Necessita do token
+ ************************************************************/
+router.get('/', auth, async(req, res)=> {
+    try{
+        db.collection(nomeCollection)
+        .find({},{projection: { senha: false}})
+        .sort({nome:1})
+        .toArray((err, docs)=> {
+            if(!err){ res.status(200).json(docs)}
+        })
+    } catch (err){
+        res.status(500).json({errors: 
+            [{msg: 'Erro ao obter a listagem de usuários'}]})
     }
-}
+})
 
-async function removeUsuario(id) {
-    if (confirm('Deseja realmente excluir o usuário?')) {
-        try {
-            const response = await fetch(`${urlBase}/usuarios/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "access-token": access_token //envia o token na requisição
-                }
-            });
+/************************************************************
+ * DELETE /usuarios/id
+ * Remove o usuário pelo id. Necessita do token
+ ************************************************************/
+router.delete('/:id', auth, async(req, res)=> {
+    await db.collection(nomeCollection)
+    .deleteOne({'_id': {$eq: ObjectId(req.params.id)}})
+    .then(result => res.status(202).send(result)) //accepted
+    .catch(err => res.status(400).json(err)) //bad request
+})
 
-            const data = await response.json();
-
-            if (response.ok && data.deletedCount > 0) {
-                carregaUsuarios(); // atualiza a UI
-            }
-        } catch (error) {
-            document.getElementById("mensagem").innerHTML = `<span class='text-danger'>Erro ao remover o usuário: ${error.message}</span>`;
-            resultadoModal.show();
-        }
+/************************************************************
+ * PUT /usuarios/id
+ * Altera os dados do usuário pelo id. Necessita do token
+ ************************************************************/
+router.put('/:id', auth, validaUsuario, async(req, res) => {
+    const schemaErrors = validationResult(req)
+    if(!schemaErrors.isEmpty()){
+        return res.status(403).json({
+            errors: schemaErrors.array()
+        })
+    } else {
+        await db.collection(nomeCollection)
+        .updateOne({'_id': {$eq: ObjectId(req.params.id)}},
+        { $set: req.body }
+        )
+        .then(result => res.status(202).send(result))
+        .catch(err => res.status(400).json(err))
     }
-}
+})
 
-async function buscaUsuarioPeloId(id) {
-    try {
-        const response = await fetch(`${urlBase}/usuarios/${id}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "access-token": access_token //envia o token na requisição
-            }
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data[0]) {
-            document.getElementById('id').value = data[0]._id;
-            document.getElementById('nome').value = data[0].nome;
-            document.getElementById('email').value = data[0].email;
-            document.getElementById('senha').value = data[0].senha;
-            document.getElementById('idade').value = data[0].idade;
-            document.getElementById(data[0].genero).checked = true;
-        }
-    } catch (error) {
-        document.getElementById("mensagem").innerHTML = `<span class='text-danger'>Erro ao buscar o usuário: ${error.message}</span>`;
-        resultadoModal.show();
-    }
-}
-
-// Chamar a função para carregar os usuários ao carregar a página
-window.onload = function () {
-    carregaUsuarios();
-};
+export default router

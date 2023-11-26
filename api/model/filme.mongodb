@@ -1,0 +1,61 @@
+use('FatecItu')
+
+db.filmes.insertOne({
+    "actors" :"Kunchacko Boban, Shalini",
+    "aka" : "Niram (1999)",
+    "imdb_id" : "tt0255426",
+    "rank" : 130452,
+    "title" : "Niram",
+    "year" : 1999,
+    "director" : "Jose Sebastian"
+})
+use('FatecItu')
+
+db.filmes.insertMany([
+  {
+    "actors": "Kamal Haasan, Sridevi",
+    "aka": "Varumayin Niram Sigappu (1980)",
+    "imdb_id": "tt0155329",
+    "rank": 136991,
+    "title": "Varumayin Niram Sigappu",
+    "year": 1980,
+    "director": "K. Balachander"
+  },
+  
+  {
+    "actors": "Govardhan B.K, Master Govardhan",
+    "aka": "Akashathinte Niram (2012)",
+    "imdb_id": "tt2186717",
+    "rank": 337763,
+    "title": "Akashathinte Niram",
+    "year": 2012,
+    "director": "Dr. Biju"
+  },
+  {
+    "actors": "Rati Agnihotri, Radhika Sarathkumar",
+    "aka": "Niram Maaratha Pookkal (1979)",
+    "imdb_id": "tt0155917",
+    "rank": 406719,
+    "title": "Niram Maaratha Pookkal",
+    "year": 1979,
+    "director": "Bharathiraja"
+  },
+  {
+    "actors": "Snisha Chandran, Nishma",
+    "aka": "Niram Maratha Pookal (2017)",
+    "imdb_id": "tt10305878",
+    "rank": 531532,
+    "title": "Niram Maratha Pookal",
+    "year": 2017,
+    "director": "Selva Sekaran"
+  },
+  {
+    "actors": "Kunchacko Boban, Shalini",
+    "aka": "Niram (1999)",
+    "imdb_id": "tt0255426",
+    "rank": 130452,
+    "title": "Niram",
+    "year": 1999,
+    "director": "Jose Sebastian"
+  }
+]);
